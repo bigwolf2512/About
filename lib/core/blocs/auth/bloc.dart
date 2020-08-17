@@ -1,7 +1,5 @@
 library core.blocs.auth;
 
-import 'dart:math';
-
 import 'package:b13_flutter/core/repositories/user/user_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';

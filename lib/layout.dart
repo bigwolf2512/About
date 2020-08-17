@@ -29,22 +29,24 @@ class _LayoutState extends State<Layout> {
     _userBloc = BlocProvider.of<UserBloc>(context);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context);
     final theme = Theme.of(context);
     return BlocBuilder(
-      bloc: _userBloc,
-      builder: (BuildContext context, UserState state){
+      cubit: _userBloc,
+      builder: (BuildContext context, UserState state) {
         return Scaffold(
           drawer: widget.drawer,
           appBar: AppBar(
             backgroundColor: Colors.white,
             actions: <Widget>[
-              if(state is !UserLoaded)
+              if (state is! UserLoaded)
                 RawMaterialButton(
                   child: Text('SignIN'),
-                  constraints: const BoxConstraints(minWidth: 28.0, minHeight: 36.0),
+                  constraints:
+                      const BoxConstraints(minWidth: 28.0, minHeight: 36.0),
                   padding: const EdgeInsets.all(3),
                   onPressed: _navigateTo(context, SignInScreen.route),
                 ),
@@ -68,7 +70,7 @@ class _LayoutState extends State<Layout> {
     );
   }
 
-  void Function() _navigateTo(BuildContext context, String route){
+  void Function() _navigateTo(BuildContext context, String route) {
     return () {
       Navigator.of(context).pushNamedAndRemoveUntil(route, (Route route) {
         return route.isFirst;

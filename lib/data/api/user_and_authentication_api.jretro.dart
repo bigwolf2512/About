@@ -2,14 +2,14 @@
 
 part of 'user_and_authentication_api.dart';
 
-// **************************************************************************
-// JaguarHttpGenerator
-// **************************************************************************
+// // **************************************************************************
+// // JaguarHttpGenerator
+// // **************************************************************************
 
 abstract class _$UserAndAuthenticationApiClient implements ApiClient {
   final String basePath = "";
   Future<UserResponse> login(LoginUserRequest body) async {
-    var req = base.post
+    var req = base.body
         .path(basePath)
         .path("/users/login")
         .json(jsonConverter.to(body));
@@ -17,7 +17,7 @@ abstract class _$UserAndAuthenticationApiClient implements ApiClient {
   }
 
   Future<UserResponse> getCurrentUser() async {
-    var req = base.get
+    var req = base.body
         .metadata({
           "auth": true,
         })

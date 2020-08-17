@@ -8,7 +8,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc({
     this.userRepository,
     this.authBloc,
-  }) {
+  }) : super(null) {
     _authBlocSubscription = authBloc.listen((state) {
       if (state is NotAuthenticated) {
         add(ClearUserDataEvent());

@@ -2,11 +2,12 @@ import 'package:b13_flutter/data/api/model/request/login_user_request.dart';
 import 'package:b13_flutter/data/api/model/response/user_response.dart';
 import 'package:b13_flutter/data/api/user_and_authentication_api.dart';
 import 'package:b13_flutter/data/models/user.dart';
+import 'package:dio/dio.dart';
 import 'package:http/io_client.dart';
 
 import 'package:b13_flutter/data/api/interceptors/auth_interceptor.dart';
 import 'package:jaguar_mimetype/jaguar_mimetype.dart';
-import 'package:jaguar_retrofit/jaguar_retrofit.dart';
+// import 'package:jaguar_retrofit/jaguar_retrofit.dart';
 import 'package:jaguar_serializer/jaguar_serializer.dart';
 
 final _jsonJaguarRepo = JsonRepo()
@@ -20,22 +21,23 @@ final Map<String, CodecRepo> defaultConverters = {
 
 class AppApi {
   String basePath = 'localhost:8080/api';
-  Route _baseRoute;
+  Response _baseRoute;
   final Duration timeout;
   final authInterceptor = AuthInterceptor();
-
+  Dio _dio;
   AppApi({
     String baseUrl,
+    Dio dio,
     List<Interceptor> interceptors,
     this.timeout = const Duration(minutes: 2),
   }) {
-    _baseRoute = Route(baseUrl ?? basePath)
-        .withClient(globalClient ?? IOClient()) as Route;
-
-    _baseRoute.before(authInterceptor.before).after(authInterceptor.after);
-
-    for (var interceptor in interceptors) {
-      _baseRoute.before(interceptor.before).after(interceptor.after);
+    _dio = dio ?? Dio();
+    _dio
+      ..options.baseUrl = baseUrl
+      ..options.connectTimeout = timeout.inMinutes
+      ..httpClientAdapter;
+    if (interceptors?.isNotEmpty ?? false) {
+      _dio.interceptors.addAll(interceptors);
     }
   }
 
@@ -48,10 +50,10 @@ class AppApi {
   }
 
   UserAndAuthenticationApi getUserAndAuthenticationApi(
-      {Route base, Map<String, CodecRepo> converters}) {
+      {Response base, Map<String, CodecRepo> converters}) {
     base ??= _baseRoute;
     converters ??= defaultConverters;
     return UserAndAuthenticationApi(
-        base: base, converters: converters, timeout: timeout);
+        baseUrl: base, converters: converters, timeout: timeout);
   }
 }
