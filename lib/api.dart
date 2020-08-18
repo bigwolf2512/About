@@ -10,6 +10,8 @@ import 'package:jaguar_mimetype/jaguar_mimetype.dart';
 // import 'package:jaguar_retrofit/jaguar_retrofit.dart';
 import 'package:jaguar_serializer/jaguar_serializer.dart';
 
+import 'data/api/user_and_authentication_api.dio.dart';
+
 final _jsonJaguarRepo = JsonRepo()
   ..add(UserSerializer())
   ..add(UserResponseSerializer())
@@ -54,6 +56,6 @@ class AppApi {
     base ??= _baseRoute;
     converters ??= defaultConverters;
     return UserAndAuthenticationApi(
-        baseUrl: base, converters: converters, timeout: timeout);
+        base: base, converters: converters, timeout: timeout);
   }
 }
