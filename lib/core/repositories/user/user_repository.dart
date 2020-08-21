@@ -1,6 +1,7 @@
 import 'package:b13_flutter/api.dart';
 import 'package:b13_flutter/data/api/model/login_user.dart';
 import 'package:b13_flutter/data/api/model/request/login_user_request.dart';
+// import 'package:b13_flutter/data/api/user_and_authentication_api.dart';
 import 'package:b13_flutter/data/api/user_and_authentication_api.dio.dart';
 import 'package:b13_flutter/data/models/user.dart';
 import 'package:b13_flutter/data/shared_preference/user_shared_preference.dart';
@@ -24,7 +25,6 @@ class UserRepository extends EventEmitter {
 
   Future<User> login(LoginUser user) async {
     final result = await userApi.login(LoginUserRequest(user: user));
-    print(result.user);
     return result.user;
   }
 

@@ -1,44 +1,35 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
-// import 'package:jaguar_retrofit/jaguar_retrofit.dart';
 
-class LogInterceptor extends InterceptorsWrapper {
-  // @override
-  // FutureOr<void> before(BaseOptions route) {
-  //   print('AUTH HEADER: ${route.}');
-  //   print('HEADERS: ${route.headers}');
-  //   print('URL: ${route.baseUrl}');
-  //   return route;
-  // }
-
-  // @override
-  // FutureOr after(RequestOptions response) {
-  //   print(response.toString());
-  //   return Future.value(response);
-  // }
+class LogInterceptor extends Interceptor {
   @override
-  onRequest(RequestOptions options) {
-    print("Headers:");
-    options.headers.forEach((k, v) => print('$k: $v'));
-
-    if (options.data != null) {
-      print("Body: ${options.data}");
-    }
-    // return options;
+  Future onError(DioError err) async {
+    print("""ERROR:
+    URL: ${err.request.uri}
+    Method: ${err.request.method} 
+    Headers: ${json.encode(err.response.headers.map)}
+        """);
+    return super.onError(err);
   }
 
   @override
-  onError(DioError dioError) {
-    dioError.response != null
-        ? print(dioError.response.data)
-        : print('Unknown Error');
+  Future onRequest(RequestOptions options) async {
+    print("""REQUEST:
+    ${onRequest(options)}
+    """);
+    return super.onRequest(options);
   }
 
   @override
-  onResponse(Response response) {
-    print("Headers:");
-    response.headers?.forEach((k, v) => print('$k: $v'));
-    print("Response: ${response.data}");
+  Future onResponse(Response response) async {
+    print("""RESPONSE:
+    URL: ${response.request.uri}
+    Method: ${response.request.method}
+    Headers: ${json.encode(response.request.headers)}
+    Data: ${json.encode(response.data)}
+        """);
+    return super.onResponse(response);
   }
 }

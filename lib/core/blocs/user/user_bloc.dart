@@ -64,9 +64,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   }
 
   List<String> _parseError(Object error) {
-    if (error is StringResponse) {
+    if (error is Response) {
       try {
-        final body = jsonDecode(error.body) as Map<String, dynamic>;
+        final body = jsonDecode(error.data) as Map<String, dynamic>;
 
         final errors = <String>[];
         if (body['errors'] != null) {

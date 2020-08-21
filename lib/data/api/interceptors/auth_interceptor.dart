@@ -1,42 +1,45 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:jaguar_retrofit/jaguar_retrofit.dart';
 
-class AuthInterceptor extends Interceptors {
+class AuthInterceptor extends Interceptor {
   String apiKey;
 
-  var _dio = Dio();
+  // @override
+  // FutureOr<void> before(RouteBase route) {
+  //   if (route.metadataMap.containsKey('auth') &&
+  //       route.metadataMap['auth'] == true &&
+  //       apiKey != null) {
+  //     route.header('Authorization', 'Token $apiKey');
+  //   }
+  //   return super.before(route);
+  // }
   @override
-  FutureOr<Response> onRequest(BaseOptions options) async {
-    _dio.options = options;
-    if (options.headers.containsKey("auth") && apiKey != null) {
-      //remove the auxiliary header
-      options.headers.remove("auth");
+  onRequest(RequestOptions options) async {
+    Map<String, String> headers = new Map();
+    headers["Authorization"] = 'Token $apiKey';
 
-      options.headers
-          .addAll({"Authorization": "Authorization", "Token": 'Token $apiKey'});
-    }
-    return _dio.resolve(options);
+    options.headers = headers;
+    return super.onRequest(options);
   }
 
   @override
-  FutureOr<dynamic> onError(DioError dioError) {
-    print(dioError);
-  }
-
-  @override
-  FutureOr<dynamic> onResponse(Response options) async {
-    if (options.headers.value("Token") != null) {
+  Future<dynamic> onResponse(Response options) async {
+    if (options.headers.value("verifyToken") != null) {
       //if the header is present, then compare it with the Shared Prefs key
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      var verifyToken = prefs.get("Token");
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
+      // var verifyToken = prefs.get("VerifyToken");
 
       // if the value is the same as the header, continue with the request
-      if (options.headers.value("Token") == verifyToken) {
-        return options;
-      }
+      // if (options.headers.value("verifyToken") == verifyToken) {
+      //   return options;
+      // }
+      return options;
     }
+  }
+
+  @override
+  Future<dynamic> onError(DioError dioError) {
+    return dioError.error;
   }
 }

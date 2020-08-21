@@ -8,8 +8,8 @@ import 'package:b13_flutter/core/repositories/user/user_repository.dart';
 import 'package:b13_flutter/data/api/model/login_user.dart';
 import 'package:b13_flutter/data/models/user.dart';
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
-import 'package:jaguar_retrofit/jaguar_retrofit.dart';
 import 'package:meta/meta.dart';
 
 part 'user_bloc.dart';
