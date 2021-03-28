@@ -1,7 +1,6 @@
-import 'package:b13_flutter/features/home/screen/home.dart';
-import 'package:b13_flutter/localizations/app_localizations.dart';
+import 'package:b13_flutter/commands/base_command.dart';
+import 'package:b13_flutter/models/main_app_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 class FlashScreen extends StatefulWidget {
@@ -11,20 +10,10 @@ class FlashScreen extends StatefulWidget {
 
 class _FlashState extends State<FlashScreen> {
   @override
-  void initState() {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      Navigator.of(context).pushReplacementNamed(HomeScreen.route);
-    });
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final locale = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-
+    AppTheme appTheme = context.select((MainAppState app) => app.theme);
     return Scaffold(
-      backgroundColor: theme.primaryColor,
+      backgroundColor: appTheme.accent1,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,

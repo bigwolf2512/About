@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class ErrorContainer extends StatelessWidget {
-  final String title;
-  final String error;
+  final String? title;
+  final String? error;
 
   ErrorContainer({
     this.title,

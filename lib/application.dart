@@ -1,69 +1,33 @@
 import 'package:b13_flutter/api.dart';
-import 'package:b13_flutter/core/blocs/auth/bloc.dart';
-import 'package:b13_flutter/core/blocs/user/bloc.dart';
-import 'package:b13_flutter/core/repositories/user/user_repository.dart';
+import 'package:b13_flutter/data/local_storage/user_local_storage.dart';
+import 'package:b13_flutter/data/repositories/user_repository.dart';
 import 'package:b13_flutter/data/api/interceptors/log_interceptor.dart';
-import 'package:b13_flutter/data/shared_preference/user_shared_preference.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Config {}
 
 class Application {
-  UserRepository userRepository;
-  Config config;
-  AuthBloc authBloc;
-  UserBloc userBloc;
+  late UserRepository userRepository;
+  Config? config;
 
-  AppApi _api;
+  late AppApi _api;
 
   Application({this.config});
 
-  Future<void> setup() async {
+  setup() async {
     _api = AppApi(interceptors: [
       LogInterceptor(),
     ]);
     await setupRepositories();
-
-    final accessToken = await userRepository.getAccessToken();
-    var isAuthenticated = false;
-    if (accessToken != null) {
-      try {
-        _api.setApiKey('Token', accessToken);
-        await userRepository.getCurrentUser();
-
-        isAuthenticated = true;
-      } catch (error) {
-        await userRepository.removeAccessToken();
-      }
-    }
-
-    setupBlocs(isAuthenticated: isAuthenticated);
+    final accessToken = userRepository.getAccessToken();
+    _api.setApiKey(accessToken);
   }
 
-  Future<void> setupRepositories() async {
-    final sharePreferences = await SharedPreferences.getInstance();
-    final userApi = _api.getUserAndAuthenticationApi();
-    final userStorage = UserSharedPreference(sharePreferences);
+  setupRepositories() async {
+    final userApi = _api.getUserApiClient();
+    final userStorage = UserLocalStorage();
+    await userStorage.load();
 
     userRepository =
         UserRepository(api: _api, userApi: userApi, userStorage: userStorage);
-  }
-
-  void setupBlocs({bool isAuthenticated}) {
-    authBloc = AuthBloc(
-        initialState: isAuthenticated ? Authenticated() : NotAuthenticated(),
-        userRepository: userRepository);
-
-    userBloc = UserBloc(userRepository: userRepository, authBloc: authBloc);
-  }
-
-  Future<void> init() async {
-    if (await userRepository.isAuthenticated()) {
-      userBloc.add(LoadUserEvent());
-    }
-  }
-
-  void close() {
-    authBloc.close();
   }
 }

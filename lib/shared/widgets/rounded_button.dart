@@ -3,18 +3,18 @@ import 'package:flutter/widgets.dart';
 
 class RoundedButton extends StatelessWidget {
   final String text;
-  final VoidCallback onPressed;
-  final TextStyle style;
+  final VoidCallback? onPressed;
+  final TextStyle? style;
   final Color backgroundColor;
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
 
   RoundedButton({
-    @required this.text,
+    required this.text,
     this.onPressed,
     this.padding,
     this.style,
-    this.backgroundColor,
-  }) : assert(text != null);
+    this.backgroundColor = Colors.transparent,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +26,7 @@ class RoundedButton extends StatelessWidget {
         padding: padding ?? const EdgeInsets.all(8.0),
         child: Text(
           text,
-          style:
-              theme.textTheme.button.copyWith(color: Colors.white).merge(style),
+          style: theme.textTheme.button?.copyWith(color: Colors.white).merge(style)
         ),
       ),
       color: backgroundColor ?? theme.accentColor,

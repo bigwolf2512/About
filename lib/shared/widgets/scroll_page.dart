@@ -4,7 +4,7 @@ class ScrollPage extends StatelessWidget {
   final Widget child;
 
   ScrollPage({
-    this.child,
+    required this.child,
   });
 
   @override
